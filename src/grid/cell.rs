@@ -27,12 +27,12 @@ mod tests {
     }
 
     fn get_x_as_f64_should_return_x_as_f64() {
-        let cell = Cell::new(0, 0);
-        assert_eq!(cell.get_x_as_f64(), 0.0);
+        let cell = Cell::new(1, 0);
+        assert_eq!(cell.get_x_as_f64(), 1.0);
     }
 
     fn get_y_as_f64_should_return_y_as_f64() {
-        let cell = Cell::new(0, 0);
-        assert_eq!(cell.get_y_as_f64(), 0.0);
+        let cell = Cell::new(0, 2);
+        assert_eq!(cell.get_y_as_f64(), 2.0);
     }
 }

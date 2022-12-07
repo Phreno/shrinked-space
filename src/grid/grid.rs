@@ -1,5 +1,6 @@
 // import cell
 use crate::grid::cell::Cell;
+use nalgebra::{Const, Matrix3, OPoint, Point3, Vector3};
 use perlin2d::PerlinNoise2D;
 pub struct Grid {
     pub width: u32,
@@ -36,29 +37,20 @@ impl Grid {
         noise
     }
 
-    pub(crate) fn to_svg(&self) -> String {
-        let mut svg = String::new();
-        svg.push_str("<svg");
-        svg.push_str(" width=\"");
-        svg.push_str(&self.width.to_string());
-        svg.push_str("\"");
-        svg.push_str(" height=\"");
-        svg.push_str(&self.height.to_string());
-        svg.push_str("\"");
-        svg.push_str(">");
-        svg.push_str("<g id=\"lines\">");
-        svg.push_str("</g>");
-        svg.push_str("<g id=\"rows\">");
-        svg.push_str("</g>");
-        svg.push_str("</svg>");
-        svg
+    pub(crate) fn get_3d_point_at(&self, get: Cell) -> OPoint<f64, Const<3>> {
+        let point = Point3::new(
+            get.get_x_as_f64(),
+            get.get_y_as_f64(),
+            self.perlin_noise_at(get),
+        );
+        point
     }
 }
 
 fn render_grid(width: i32, height: i32) -> Vec<Cell> {
     let mut cells = vec![];
-    for x in 0..width {
-        for y in 0..height {
+    for y in 0..width {
+        for x in 0..height {
             cells.push(Cell::new(x, y));
         }
     }
@@ -90,26 +82,13 @@ mod tests {
     fn perlin_noise_at_should_return_a_value() {
         let grid = Grid::new(10, 10);
         let value = grid.perlin_noise_at(grid.get(0, 1));
-        assert_eq!(value, 2.5620391080347096);
-    }
-    #[test]
-    fn to_svg_should_return_a_string_that_starts_with_svg_tag() {
-        let grid = Grid::new(10, 10);
-        let svg = grid.to_svg();
-        assert_eq!(svg.starts_with("<svg"), true);
+        assert_eq!(value, 2.890339412503229);
     }
 
     #[test]
-    fn to_svg_should_return_a_svg_string_with_a_group_for_each_line() {
+    fn get_3d_point_at_should_return_a_point() {
         let grid = Grid::new(10, 10);
-        let svg_string = grid.to_svg();
-        assert!(svg_string.contains("<g id=\"lines\">"));
-    }
-
-    #[test]
-    fn to_svg_should_return_a_svg_string_with_a_group_for_each_rows() {
-        let grid = Grid::new(10, 10);
-        let svg_string = grid.to_svg();
-        assert!(svg_string.contains("<g id=\"rows\">"));
+        let point = grid.get_3d_point_at(grid.get(0, 1));
+        assert_eq!(point, Point3::new(0.0, 1.0, 2.890339412503229));
     }
 }

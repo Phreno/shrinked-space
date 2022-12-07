@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 perlin2d = "0.2.6"
 xml5ever = "0.17.0"
+nalgebra = "0.31.4"

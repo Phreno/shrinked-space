@@ -62,6 +62,40 @@ impl Grid {
         // Return the projected coordinates
         Point2::new(px, py)
     }
+
+    pub(crate) fn get_lines(&self) -> Vec<Vec<OPoint<f64, Const<2>>>> {
+        let mut lines = vec![];
+        let mut line = vec![];
+        for y in 0..self.height {
+            for x in 0..self.width {
+                let cell = self.get(x as i32, y as i32);
+                let point = self.to_3_points_perspective(cell);
+                line.push(point);
+                if x == self.width - 1 {
+                    lines.push(line);
+                    line = vec![];
+                }
+            }
+        }
+        lines
+    }
+
+    pub(crate) fn get_rows(&self) -> Vec<Vec<OPoint<f64, Const<2>>>> {
+        let mut rows = vec![];
+        let mut row = vec![];
+        for y in 0..self.height {
+            for x in 0..self.width {
+                let cell = self.get(x as i32, y as i32);
+                let point = self.to_3_points_perspective(cell);
+                row.push(point);
+                if x == self.width - 1 {
+                    rows.push(row);
+                    row = vec![];
+                }
+            }
+        }
+        rows
+    }
 }
 
 fn render_grid(width: i32, height: i32) -> Vec<Cell> {
@@ -124,5 +158,19 @@ mod tests {
         let grid = Grid::new(10, 10);
         let projection = grid.to_3_points_perspective(grid.get(0, 1));
         assert_eq!(projection, Point2::new(0.0, 3.4598012803414413));
+    }
+
+    #[test]
+    fn get_lines_should_return_a_vector_of_lines() {
+        let grid = Grid::new(10, 10);
+        let lines = grid.get_lines();
+        assert_eq!(lines.len(), 10);
+    }
+
+    #[test]
+    fn get_rows_should_return_a_vector_of_rows() {
+        let grid = Grid::new(10, 10);
+        let rows = grid.get_rows();
+        assert_eq!(rows.len(), 10);
     }
 }

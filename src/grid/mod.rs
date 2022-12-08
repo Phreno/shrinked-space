@@ -14,28 +14,32 @@ pub fn to_svg(grid: Grid) -> String {
     // the svg has a white background
     svg.push_str("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100%\" height=\"100%\" style=\"background-color:white\">");
     // do a group for rows
+
+    // do a white background
+    svg.push_str("<rect width=\"100%\" height=\"100%\" style=\"fill:white;stroke-width:0\" />");
+
+    svg.push_str("<g>");
     for row in grid.get_rows() {
-        svg.push_str("<g>");
         // for each row, link all the points inside a polyline
         svg.push_str("<polyline points=\"");
         for point in row {
             svg.push_str(&format!("{},{} ", point.x, point.y));
         }
-        svg.push_str("\" style=\"fill:none;stroke:black;stroke-width:1\" />");
-        svg.push_str("</g>");
+        svg.push_str("\" style=\"fill:none;stroke:black;stroke-width:2\" />");
     }
+    svg.push_str("</g>");
 
     // do a group for lines
+    svg.push_str("<g>");
     for line in grid.get_lines() {
-        svg.push_str("<g>");
         // for each row, link all the points inside a polyline
         svg.push_str("<polyline points=\"");
         for point in line {
             svg.push_str(&format!("{},{} ", point.x, point.y));
         }
         svg.push_str("\" style=\"fill:none;stroke:black;stroke-width:1\" />");
-        svg.push_str("</g>");
     }
+    svg.push_str("</g>");
 
     svg.push_str("</svg>");
     svg

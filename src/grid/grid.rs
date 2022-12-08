@@ -13,7 +13,7 @@ impl Grid {
     /// Creates a new [`Grid`].
     pub(crate) fn new(width: i32, height: i32) -> Self {
         let cells = render_grid(width, height);
-        let perlin = PerlinNoise2D::new(1, 1.0, 2.0, 0.5, 0.7, (1.0, 0.2), 3.0, 0);
+        let perlin = PerlinNoise2D::new(1, 1.0, 1.0, 1.0, 1.0, (1.0, 1.0), 1.0, 0);
         Grid {
             width: width as u32,
             height: height as u32,

@@ -8,10 +8,10 @@ impl Cell {
         Self { x, y }
     }
     pub(crate) fn get_x_as_f64(&self) -> f64 {
-        self.x as f64 * 20.0
+        self.x as f64
     }
     pub(crate) fn get_y_as_f64(&self) -> f64 {
-        self.y as f64 * 20.0
+        self.y as f64
     }
 }
 

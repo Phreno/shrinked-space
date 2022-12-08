@@ -1,22 +1,32 @@
 // import cell
 use crate::grid::cell::Cell;
-use nalgebra::{Const, Matrix3, OPoint, Point2, Point3, Vector3};
+use crate::grid::conf::Conf;
+use nalgebra::{Const, OPoint, Point2, Point3};
 use perlin2d::PerlinNoise2D;
 pub struct Grid {
-    pub width: u32,
-    pub height: u32,
+    pub width: i32,
+    pub height: i32,
     pub cells: Vec<Cell>,
     perlin: PerlinNoise2D,
 }
 
 impl Grid {
     /// Creates a new [`Grid`].
-    pub(crate) fn new(width: i32, height: i32) -> Self {
-        let cells = render_grid(width, height);
-        let perlin = PerlinNoise2D::new(1, 1.0, 1.0, 1.0, 1.0, (1.0, 1.0), 1.0, 0);
+    pub(crate) fn new(conf: Conf) -> Self {
+        let cells = render_grid(conf.size, conf.size);
+        let perlin = PerlinNoise2D::new(
+            conf.octaves,
+            conf.amplitude,
+            conf.frequency,
+            conf.persistence,
+            conf.lacunarity,
+            conf.scale,
+            conf.bias,
+            conf.seed,
+        );
         Grid {
-            width: width as u32,
-            height: height as u32,
+            width: conf.size,
+            height: conf.size,
             cells,
             perlin,
         }
@@ -52,13 +62,15 @@ impl Grid {
     }
 
     fn get_3_points_perspective_at(&self, point: OPoint<f64, Const<3>>) -> Point2<f64> {
-        let vx = point.x / 2.0;
-        let vy = point.y / (point.z / 10.0);
+        //0let vx = point.x / 2.0;
+        //0let vy = point.y / (point.z / 3.0);
 
-        // Calculate the coordinates of the projected cube
+        //0// Calculate the coordinates of the projected cube
+        //0let px = vx / (point.z / 10.0);
+        //0let py = vy / (point.z / 10.0);
+
         let px = point.x / (point.z / 10.0);
         let py = point.y / (point.z / 10.0);
-
         // Return the projected coordinates
         Point2::new(px, py)
     }
@@ -112,11 +124,13 @@ fn render_grid(width: i32, height: i32) -> Vec<Cell> {
 mod tests {
     use nalgebra::Point2;
 
+    use crate::grid::default_conf;
+
     use super::*;
 
     #[test]
     fn new_should_have_a_constructor() {
-        let grid = Grid::new(10, 10);
+        let grid = Grid::new(default_conf());
         assert_eq!(grid.width, 10);
         assert_eq!(grid.height, 10);
         assert_eq!(grid.cells.len(), 100);
@@ -124,7 +138,7 @@ mod tests {
 
     #[test]
     fn get_should_return_a_cell() {
-        let grid = Grid::new(10, 10);
+        let grid = Grid::new(default_conf());
         let cell = grid.get(0, 0);
         assert_eq!(cell, Cell::new(0, 0));
         assert_eq!(cell.x, 0);
@@ -133,21 +147,21 @@ mod tests {
 
     #[test]
     fn perlin_noise_at_should_return_a_value() {
-        let grid = Grid::new(10, 10);
+        let grid = Grid::new(default_conf());
         let value = grid.perlin_noise_at(grid.get(0, 1));
         assert_eq!(value, 2.890339412503229);
     }
 
     #[test]
     fn get_3d_point_at_should_return_a_3Dpoint() {
-        let grid = Grid::new(10, 10);
+        let grid = Grid::new(default_conf());
         let point = grid.get_3d_point_at(grid.get(0, 1));
         assert_eq!(point, Point3::new(0.0, 1.0, 2.890339412503229));
     }
 
     #[test]
     fn get_3_points_perspective_at_should_return_a_2Dpoint() {
-        let grid = Grid::new(10, 10);
+        let grid = Grid::new(default_conf());
         let point = grid.get_3d_point_at(grid.get(0, 1));
         let projection = grid.get_3_points_perspective_at(point);
         assert_eq!(projection, Point2::new(0.0, 3.4598012803414413));
@@ -155,21 +169,21 @@ mod tests {
 
     #[test]
     fn to_3_points_perspective_should_return_a_2Dpoint() {
-        let grid = Grid::new(10, 10);
+        let grid = Grid::new(default_conf());
         let projection = grid.to_3_points_perspective(grid.get(0, 1));
         assert_eq!(projection, Point2::new(0.0, 3.4598012803414413));
     }
 
     #[test]
     fn get_lines_should_return_a_vector_of_lines() {
-        let grid = Grid::new(10, 10);
+        let grid = Grid::new(default_conf());
         let lines = grid.get_lines();
         assert_eq!(lines.len(), 10);
     }
 
     #[test]
     fn get_rows_should_return_a_vector_of_rows() {
-        let grid = Grid::new(10, 10);
+        let grid = Grid::new(default_conf());
         let rows = grid.get_rows();
         assert_eq!(rows.len(), 10);
     }

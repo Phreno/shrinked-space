@@ -1,9 +1,13 @@
+mod args;
 mod grid;
-use grid::*;
+
 fn main() {
+    // update the conf with the command line arguments
+    let conf = args::parse_args_or_default();
+    let output = conf.output.clone();
     // make a grid
-    let grid = grid::get_new_grid(50);
+    let grid = grid::get_new_grid(conf);
     let svg = grid::to_svg(grid);
     // write to file
-    std::fs::write("grid.svg", svg).expect("Unable to write file");
+    std::fs::write(output, svg).expect("Unable to write file");
 }

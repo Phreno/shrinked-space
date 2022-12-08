@@ -10,16 +10,33 @@ pub fn get_new_grid(size: i32) -> Grid {
 
 pub fn to_svg(grid: Grid) -> String {
     let mut svg = String::new();
-    svg.push_str(
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"100%\" height=\"100%\">",
-    );
-    for line in grid.get_lines() {
-        svg.push_str("<path d=\"");
-        for point in line {
-            svg.push_str(&format!("M{} {} ", point.x, point.y));
+
+    // the svg has a white background
+    svg.push_str("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100%\" height=\"100%\" style=\"background-color:white\">");
+    // do a group for rows
+    for row in grid.get_rows() {
+        svg.push_str("<g>");
+        // for each row, link all the points inside a polyline
+        svg.push_str("<polyline points=\"");
+        for point in row {
+            svg.push_str(&format!("{},{} ", point.x, point.y));
         }
-        svg.push_str("\" stroke=\"black\" stroke-width=\"1\" fill=\"none\" />");
+        svg.push_str("\" style=\"fill:none;stroke:black;stroke-width:1\" />");
+        svg.push_str("</g>");
     }
+
+    // do a group for lines
+    for line in grid.get_lines() {
+        svg.push_str("<g>");
+        // for each row, link all the points inside a polyline
+        svg.push_str("<polyline points=\"");
+        for point in line {
+            svg.push_str(&format!("{},{} ", point.x, point.y));
+        }
+        svg.push_str("\" style=\"fill:none;stroke:black;stroke-width:1\" />");
+        svg.push_str("</g>");
+    }
+
     svg.push_str("</svg>");
     svg
 }

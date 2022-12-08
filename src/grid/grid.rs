@@ -13,7 +13,7 @@ impl Grid {
     /// Creates a new [`Grid`].
     pub(crate) fn new(width: i32, height: i32) -> Self {
         let cells = render_grid(width, height);
-        let perlin = PerlinNoise2D::new(8, 1.0, 2.0, 0.5, 0.7, (1.0, 0.2), 3.0, 0);
+        let perlin = PerlinNoise2D::new(1, 1.0, 2.0, 0.5, 0.7, (1.0, 0.2), 3.0, 0);
         Grid {
             width: width as u32,
             height: height as u32,
@@ -81,20 +81,20 @@ impl Grid {
     }
 
     pub(crate) fn get_rows(&self) -> Vec<Vec<OPoint<f64, Const<2>>>> {
-        let mut rows = vec![];
-        let mut row = vec![];
-        for y in 0..self.height {
-            for x in 0..self.width {
+        let mut columns = vec![];
+        let mut column = vec![];
+        for x in 0..self.height {
+            for y in 0..self.width {
                 let cell = self.get(x as i32, y as i32);
                 let point = self.to_3_points_perspective(cell);
-                row.push(point);
-                if x == self.width - 1 {
-                    rows.push(row);
-                    row = vec![];
+                column.push(point);
+                if y == self.height - 1 {
+                    columns.push(column);
+                    column = vec![];
                 }
             }
         }
-        rows
+        columns
     }
 }
 

@@ -13,6 +13,7 @@ pub struct Conf {
     pub output: String,
 }
 impl Conf {
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         size: i32,
         octaves: i32,

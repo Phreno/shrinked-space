@@ -69,11 +69,9 @@ fn check_zoom_or_default(matches: &ArgMatches, conf: &mut Conf) {
 
 fn check_scale_or_default(matches: &ArgMatches, conf: &mut Conf) {
     if let Some(scale) = matches.value_of("scale") {
-        // scale is a string of the form "(x,y)"
         let scale: String = scale.parse().unwrap();
-        // remove the parenthesis if they exist
-        let scale: String = scale.replace("(", "");
-        let scale: String = scale.replace(")", "");
+        let scale: String = scale.replace('(', "");
+        let scale: String = scale.replace(')', "");
         let scale: Vec<&str> = scale.split(',').collect();
         let x: f64 = scale[0].parse().unwrap();
         let y: f64 = scale[1].parse().unwrap();

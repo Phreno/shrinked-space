@@ -46,19 +46,16 @@ impl Grid {
     }
 
     fn perlin_noise_at(&self, cell: Cell) -> f64 {
-        let noise = self
-            .perlin
-            .get_noise(cell.get_x_as_f64(), cell.get_y_as_f64());
-        noise
+        self.perlin
+            .get_noise(cell.get_x_as_f64(), cell.get_y_as_f64())
     }
 
     fn get_3d_point_at(&self, get: Cell) -> OPoint<f64, Const<3>> {
-        let point = Point3::new(
+        Point3::new(
             get.get_x_as_f64(),
             get.get_y_as_f64(),
             self.perlin_noise_at(get),
-        );
-        point
+        )
     }
 
     fn get_3_points_perspective_at(&self, point: OPoint<f64, Const<3>>) -> Point2<f64> {

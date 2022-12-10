@@ -2,18 +2,18 @@ use clap::ArgMatches;
 
 use crate::grid::conf::Conf;
 
-pub fn check_or_default(matches: clap::ArgMatches, conf: &mut Conf) {
-    check_size_or_default(&matches, conf);
-    check_octaves_or_default(&matches, conf);
-    check_persistence_or_default(&matches, conf);
-    check_lacunarity_or_default(&matches, conf);
-    check_frequency_or_default(&matches, conf);
-    check_amplitude_or_default(&matches, conf);
-    check_seed_or_default(&matches, conf);
-    check_zoom_or_default(&matches, conf);
-    check_scale_or_default(&matches, conf);
-    check_bias_or_default(&matches, conf);
-    check_output_or_default(&matches, conf);
+pub fn check_or_default(matches: clap::ArgMatches, default_conf: &mut Conf) {
+    check_size_or_default(&matches, default_conf);
+    check_octaves_or_default(&matches, default_conf);
+    check_persistence_or_default(&matches, default_conf);
+    check_lacunarity_or_default(&matches, default_conf);
+    check_frequency_or_default(&matches, default_conf);
+    check_amplitude_or_default(&matches, default_conf);
+    check_seed_or_default(&matches, default_conf);
+    check_zoom_or_default(&matches, default_conf);
+    check_scale_or_default(&matches, default_conf);
+    check_bias_or_default(&matches, default_conf);
+    check_output_or_default(&matches, default_conf);
 }
 fn check_size_or_default(matches: &ArgMatches, conf: &mut Conf) {
     if let Some(size) = matches.value_of("size") {

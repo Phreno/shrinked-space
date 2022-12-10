@@ -3,6 +3,7 @@ use crate::grid::cell::Cell;
 use crate::grid::conf::Conf;
 use nalgebra::{Const, OPoint, Point2, Point3};
 use perlin2d::PerlinNoise2D;
+
 pub struct Grid {
     pub width: i32,
     pub height: i32,
@@ -59,12 +60,13 @@ impl Grid {
     }
 
     fn get_3_points_perspective_at(&self, point: OPoint<f64, Const<3>>) -> Point2<f64> {
-        //0let vx = point.x / 2.0;
-        //0let vy = point.y / (point.z / 3.0);
+        // rotate the point around the x axis
+        //let point = rotate_z(point, std::f64::consts::PI / 4.0);
 
-        //0// Calculate the coordinates of the projected cube
-        //0let px = vx / (point.z / 10.0);
-        //0let py = vy / (point.z / 10.0);
+        //let vx = point.x * 0.8;
+        //let vy = point.y / (point.z * 0.2);
+        //let px = vx / (point.z / 10.0);
+        //let py = vy / (point.z / 10.0);
 
         let px = point.x / (point.z / 10.0);
         let py = point.y / (point.z / 10.0);

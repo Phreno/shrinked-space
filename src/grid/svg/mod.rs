@@ -1,3 +1,6 @@
+mod grid_renderer;
+use grid_renderer::render_bezier_cubic;
+
 use super::grid_core::Grid;
 
 pub fn to_svg(grid: Grid) -> String {
@@ -29,27 +32,4 @@ fn append_lines(svg: &mut String, grid: &Grid) {
         render_bezier_cubic(svg, line);
     }
     svg.push_str("</g>");
-}
-
-fn render_polyline(svg: &mut String, row: Vec<nalgebra::OPoint<f64, nalgebra::Const<2>>>) {
-    svg.push_str("<polyline points=\"");
-    for point in row {
-        svg.push_str(&format!("{},{} ", point.x, point.y));
-    }
-    svg.push_str("\"  />");
-}
-
-fn render_bezier_cubic(svg: &mut String, row: Vec<nalgebra::OPoint<f64, nalgebra::Const<2>>>) {
-    svg.push_str("<path d=\"");
-
-    let mut first = true;
-    for point in row {
-        if first {
-            svg.push_str(&format!("M{},{} ", point.x, point.y));
-            first = false;
-        } else {
-            svg.push_str(&format!("L{},{} ", point.x, point.y));
-        }
-    }
-    svg.push_str("\"  />");
 }

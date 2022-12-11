@@ -1,35 +1,27 @@
 // import cell
 use crate::grid::cell::Cell;
 use crate::grid::conf::Conf;
-use nalgebra::{Const, OPoint, Point2, Point3};
-use perlin2d::PerlinNoise2D;
+use nalgebra::{Const, OPoint};
+
+use super::perspective::{set_perlin_noise, to_3_points_perspective};
 
 pub struct Grid {
     pub width: i32,
     pub height: i32,
     pub cells: Vec<Cell>,
-    perlin: PerlinNoise2D,
 }
 
 impl Grid {
     /// Creates a new [`Grid`].
     pub(crate) fn new(conf: Conf) -> Self {
+        let width = conf.size;
+        let height = conf.size;
         let cells = render_grid(conf.size, conf.size);
-        let perlin = PerlinNoise2D::new(
-            conf.octaves,
-            conf.amplitude,
-            conf.frequency,
-            conf.persistence,
-            conf.lacunarity,
-            conf.scale,
-            conf.bias,
-            conf.seed,
-        );
+        set_perlin_noise(conf);
         Grid {
-            width: conf.size,
-            height: conf.size,
+            width,
+            height,
             cells,
-            perlin,
         }
     }
 
@@ -37,86 +29,31 @@ impl Grid {
         self.cells[self.get_cell_index(y, x)]
     }
 
-    pub(crate) fn to_3_points_perspective(&self, get: Cell) -> Point2<f64> {
-        let point = self.get_3d_point_at(get);
-        self.get_3_points_perspective_at(point)
-    }
-
     fn get_cell_index(&self, y: i32, x: i32) -> usize {
         (y * self.width as i32 + x) as usize
     }
 
-    fn perlin_noise_at(&self, cell: Cell) -> f64 {
-        self.perlin
-            .get_noise(cell.get_x_as_f64(), cell.get_y_as_f64())
-    }
-
-    fn get_3d_point_at(&self, get: Cell) -> OPoint<f64, Const<3>> {
-        Point3::new(
-            get.get_x_as_f64(),
-            get.get_y_as_f64(),
-            self.perlin_noise_at(get),
-        )
-    }
-
-    fn get_3_points_perspective_at(&self, point: OPoint<f64, Const<3>>) -> Point2<f64> {
-        // rotate the point around the x axis
-        //let point = rotate_z(point, std::f64::consts::PI / 4.0);
-
-        //let vx = point.x * 0.8;
-        //let vy = point.y / (point.z * 0.2);
-        //let px = vx / (point.z / 10.0);
-        //let py = vy / (point.z / 10.0);
-
-        let px = point.x / (point.z / 10.0);
-        let py = point.y / (point.z / 10.0);
-        // Return the projected coordinates
-        Point2::new(px, py)
-    }
-
     pub(crate) fn get_lines(&self) -> Vec<Vec<OPoint<f64, Const<2>>>> {
-        let mut lines = vec![];
-        let mut line = vec![];
-        for y in 0..self.height {
-            for x in 0..self.width {
-                let cell = self.get(x as i32, y as i32);
-                let point = self.to_3_points_perspective(cell);
-                line.push(point);
-                if x == self.width - 1 {
-                    lines.push(line);
-                    line = vec![];
-                }
-            }
-        }
-        lines
+        let walk_row = |row| {
+            let walk_col = |col| to_3_points_perspective(self.get(col as i32, row as i32));
+            (0..self.width).map(walk_col).collect()
+        };
+        (0..self.height).map(walk_row).collect()
     }
 
     pub(crate) fn get_rows(&self) -> Vec<Vec<OPoint<f64, Const<2>>>> {
-        let mut columns = vec![];
-        let mut column = vec![];
-        for x in 0..self.height {
-            for y in 0..self.width {
-                let cell = self.get(x as i32, y as i32);
-                let point = self.to_3_points_perspective(cell);
-                column.push(point);
-                if y == self.height - 1 {
-                    columns.push(column);
-                    column = vec![];
-                }
-            }
-        }
-        columns
+        let walk_col = |col| {
+            let walk_row = |row| to_3_points_perspective(self.get(col as i32, row as i32));
+            (0..self.width).map(walk_row).collect()
+        };
+        (0..self.height).map(walk_col).collect()
     }
 }
 
 fn render_grid(width: i32, height: i32) -> Vec<Cell> {
-    let mut cells = vec![];
-    for y in 0..width {
-        for x in 0..height {
-            cells.push(Cell::new(x, y));
-        }
-    }
-    cells
+    (0..width)
+        .flat_map(|y| (0..height).map(move |x: i32| Cell::new(x, y)))
+        .collect()
 }
 
 #[cfg(test)]

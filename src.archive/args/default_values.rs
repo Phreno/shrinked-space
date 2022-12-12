@@ -1,6 +1,6 @@
 use clap::ArgMatches;
 
-use crate::grid::conf::Conf;
+use crate::grid::conf::{Conf, ConfBuilder};
 
 pub fn check_or_default(matches: clap::ArgMatches, default_conf: &mut Conf) {
     check_size_or_default(&matches, default_conf);
@@ -17,8 +17,7 @@ pub fn check_or_default(matches: clap::ArgMatches, default_conf: &mut Conf) {
 }
 fn check_size_or_default(matches: &ArgMatches, conf: &mut Conf) {
     if let Some(size) = matches.value_of("size") {
-        let size: i32 = size.parse().unwrap();
-        conf.size = size;
+        conf.with_size(size.parse().unwrap());
     }
 }
 fn check_octaves_or_default(matches: &ArgMatches, conf: &mut Conf) {

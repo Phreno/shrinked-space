@@ -5,5 +5,6 @@ mod grid;
 fn main() {
     let grid = Grid::from(conf::get_conf());
     let svg = grid::svg::to_svg(grid);
+    print!("{:?}", conf::get_conf());
     std::fs::write(conf::get_conf().get_output(), svg).expect("Unable to write file");
 }

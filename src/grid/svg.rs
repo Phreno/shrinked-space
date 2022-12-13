@@ -1,7 +1,7 @@
 mod grid_renderer;
 use grid_renderer::render_bezier_cubic;
 
-use super::grid_core::Grid;
+use super::Grid;
 
 pub fn to_svg(grid: Grid) -> String {
     let mut svg = String::new();

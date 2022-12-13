@@ -1,7 +1,9 @@
 use nalgebra::{Const, OPoint, Point2, Point3};
 use perlin2d::PerlinNoise2D;
 
-use super::{cell::Cell, conf::Conf};
+use crate::conf::{getters::ConfGetter, Conf};
+
+use super::cell::Cell;
 
 // Define a static perlin noise generator
 static mut PERLIN: Option<PerlinNoise2D> = None;
@@ -45,14 +47,14 @@ fn perlin_noise_at(cell: Cell) -> f64 {
 
 fn to_perlin_noise(conf: &Conf) -> PerlinNoise2D {
     let perlin = PerlinNoise2D::new(
-        conf.octaves,
-        conf.amplitude,
-        conf.frequency,
-        conf.persistence,
-        conf.lacunarity,
-        conf.scale,
-        conf.bias,
-        conf.seed,
+        conf.get_octaves(),
+        conf.get_amplitude(),
+        conf.get_frequency(),
+        conf.get_persistence(),
+        conf.get_lacunarity(),
+        conf.get_scale(),
+        conf.get_bias(),
+        conf.get_seed(),
     );
     perlin
 }

@@ -2,7 +2,7 @@ mod builder;
 mod checker;
 mod default;
 mod from_argmatches;
-mod getters;
+pub mod getters;
 mod matches;
 
 #[derive(Debug, Clone)]

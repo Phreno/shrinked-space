@@ -30,7 +30,6 @@ impl From<Conf> for Grid {
 }
 
 impl Grid {
-    /// Creates a new [`Grid`].
     pub(crate) fn get(&self, x: i32, y: i32) -> Cell {
         self.cells[self.get_cell_index(y, x)]
     }
